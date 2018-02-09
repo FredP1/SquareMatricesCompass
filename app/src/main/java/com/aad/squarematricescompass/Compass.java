@@ -40,7 +40,8 @@ public class Compass extends AppCompatActivity {
             R.drawable.car_northeast_northwest, R.drawable.car_northeast_southeast, R.drawable.car_northeast_southwest, R.drawable.car_northwest_southeast, R.drawable.car_northwest_southwest,
             R.drawable.car_south_east, R.drawable.car_south_northeast, R.drawable.car_south_northwest, R.drawable.car_south_southeast, R.drawable.car_south_southwest,
             R.drawable.car_southeast_southwest,
-            R.drawable.car_west_northeast, R.drawable.car_west_northwest, R.drawable.car_west_southwest};
+            R.drawable.car_west_northeast, R.drawable.car_west_northwest, R.drawable.car_west_southwest,
+            R.drawable.careastsouthwest, R.drawable.careastwest, R.drawable.carnortheast, R.drawable.carnorthsouth, R.drawable.carsouthwest, R.drawable.carwestsoutheast};
 
     int[] boardArray = {R.id.option1,R.id.option2,R.id.option3,R.id.option4,R.id.option5,R.id.option6,R.id.option7,R.id.option8,R.id.option9,R.id.option10,R.id.option11,R.id.option12,R.id.option13,R.id.option14,R.id.option15,R.id.option16};
 
