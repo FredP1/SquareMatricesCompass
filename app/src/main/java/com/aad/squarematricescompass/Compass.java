@@ -42,12 +42,14 @@ public class Compass extends AppCompatActivity {
             R.drawable.car_southeast_southwest,
             R.drawable.car_west_northeast, R.drawable.car_west_northwest, R.drawable.car_west_southwest};
 
-    ArrayList<Integer> carImages = new ArrayList<Integer>();
+    int[] boardArray = {R.id.option1,R.id.option2,R.id.option3,R.id.option4,R.id.option5,R.id.option6,R.id.option7,R.id.option8,R.id.option9,R.id.option10,R.id.option11,R.id.option12,R.id.option13,R.id.option14,R.id.option15,R.id.option16};
+
+    ArrayList<Integer> carImages = new ArrayList<>();
+    ArrayList<Integer> binImages = new ArrayList<>();
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Collections.addAll(carImages,carImages1);
-
         setContentView(R.layout.activity_compass);
 
         ImageView cardSlotImage = (ImageView) findViewById(R.id.cardSlot);
@@ -73,7 +75,11 @@ public class Compass extends AppCompatActivity {
         findViewById(R.id.option15).setOnDragListener(new dragListener());findViewById(R.id.option15).setOnTouchListener(new dragTouchListener());
         findViewById(R.id.option16).setOnDragListener(new dragListener());findViewById(R.id.option16).setOnTouchListener(new dragTouchListener());
         findViewById(R.id.bin).setOnDragListener(new dragListener());
-
+        findViewById(R.id.placeholder1).setOnDragListener(new dragListener());findViewById(R.id.placeholder1).setOnTouchListener(new dragTouchListener());
+        findViewById(R.id.placeholder2).setOnDragListener(new dragListener());findViewById(R.id.placeholder2).setOnTouchListener(new dragTouchListener());
+        findViewById(R.id.placeholder3).setOnDragListener(new dragListener());findViewById(R.id.placeholder3).setOnTouchListener(new dragTouchListener());
+        findViewById(R.id.placeholder4).setOnDragListener(new dragListener());findViewById(R.id.placeholder4).setOnTouchListener(new dragTouchListener());
+        findViewById(R.id.placeholder5).setOnDragListener(new dragListener());findViewById(R.id.placeholder5).setOnTouchListener(new dragTouchListener());
 
     }
 
@@ -110,29 +116,33 @@ public class Compass extends AppCompatActivity {
                     break;
                 case DragEvent.ACTION_DROP:
                     view.invalidate();
-                    View v = (View) dragEvent.getLocalState();
+                    ImageView v = (ImageView) dragEvent.getLocalState();
                     if ((((ImageView) view).getDrawable()!=null) && ((view.getId() != R.id.bin)))
                     {
                         break;
                     }
-                    if (view.getId() == R.id.bin)
-                    {
-                        //carImages.remove(((ImageView) v).getDrawable());
-                        System.out.println(((ImageView) v).getImageAlpha());
-                        System.out.println(carImages.get(5));
-                        System.out.println(carImages.size());
+                    if (view.getId() == R.id.bin) {
+                        carImages.remove(v.getTag());
+                        binImages.add(Integer.valueOf(v.getTag().toString()));
                     }
-                    //ViewGroup viewParentLayout = (ViewGroup) v.getParent();
-                    //viewParentLayout.removeView(v);
-                    ImageView container = (ImageView) view;
-                    container.setImageDrawable(((ImageView) v).getDrawable());
+                    else {
+                        ImageView container = (ImageView) view;
+                        container.setImageDrawable(((ImageView) v).getDrawable());
+                        container.setTag(v.getTag());
+                        System.out.println(v.getTag());
+                        System.out.println(view.getTag());
+                    }
+
                     ((ImageView) v).setImageDrawable(null);
                     v.setVisibility(View.VISIBLE);
                     if (v.getId() == R.id.cardSlot) {
-                        //carImages.remove(((ImageView) v).getDrawable());
-                        int random = (int) (Math.random() * carImages.size() + 0);
-                        ImageView cardSlotImage = findViewById(R.id.cardSlot);
-                        cardSlotImage.setImageDrawable(getDrawable(carImages.get(random)));
+                        carImages.remove(v.getTag());
+                        if (carImages.size() != 0) {
+                            int random = (int) (Math.random() * carImages.size() + 0);
+                            ImageView cardSlotImage = findViewById(R.id.cardSlot);
+                            cardSlotImage.setImageDrawable(getDrawable(carImages.get(random)));
+                            cardSlotImage.setTag(carImages.get(random));
+                        }
                     }
                     return true;
                 case DragEvent.ACTION_DRAG_ENDED:
