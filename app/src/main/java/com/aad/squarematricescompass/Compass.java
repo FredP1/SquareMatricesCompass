@@ -17,10 +17,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.util.Pair;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -58,6 +60,8 @@ public class Compass extends AppCompatActivity {
 
         cardSlotImage.setTag(carImages.get(5));
 
+        int testing = scoreCars();
+
         findViewById(R.id.cardSlot).setOnTouchListener(new dragTouchListener());
         findViewById(R.id.option1).setOnDragListener(new dragListener());findViewById(R.id.option1).setOnTouchListener(new dragTouchListener());
         findViewById(R.id.option2).setOnDragListener(new dragListener());findViewById(R.id.option2).setOnTouchListener(new dragTouchListener());
@@ -84,6 +88,26 @@ public class Compass extends AppCompatActivity {
 
     }
 
+    private int scoreCars()
+    {
+        int tempScore = 0;
+        int[] imgCoordinates = new int[2];
+        boardCoordinates coordinates = new boardCoordinates();
+        ArrayList<boardCoordinates> coordinatesArray = new ArrayList<>();
+        for (int i =0; i < boardArray.length; i++)
+        {
+            findViewById(boardArray[i]).getLocationInWindow(imgCoordinates);
+            coordinates.setViewID(boardArray[i]);
+            coordinates.setX(imgCoordinates[0]);
+            coordinates.setY(imgCoordinates[1]);
+            //System.out.println(coordinates.getFirstDirection() + " " +coordinates.getSecondDirection());
+            //System.out.println(imgCoordinates[1]);
+            coordinatesArray.add(coordinates);
+        }
+
+        return tempScore;
+    }
+
     private final class dragTouchListener implements View.OnTouchListener {
         @Override
         public boolean onTouch(View view, MotionEvent event) {
@@ -92,6 +116,16 @@ public class Compass extends AppCompatActivity {
                 ClipData data = ClipData.newPlainText("", "");
                 String[] mimeTypes = {ClipDescription.MIMETYPE_TEXT_PLAIN};
                 view.startDragAndDrop(data, shadowBuilder, view, 0);
+/*                System.out.println("Touched view ID:");
+                System.out.println(view.getTag());
+                System.out.println("Option 1 ID:");
+                System.out.println(R.id.option1);
+                System.out.println(view.getLeft());
+                System.out.println(findViewById(R.id.option1).getLeft());
+                if (view.getParent() == findViewById(R.id.option1)){
+                    System.out.println("You have clicked on option1");
+                }*/
+                int score = scoreCars();
                 return true;
             }
             return false;
@@ -105,10 +139,8 @@ public class Compass extends AppCompatActivity {
             switch (action) {
                 case DragEvent.ACTION_DRAG_STARTED:
                     if (dragEvent.getClipDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)) {
-                        System.out.println("This can accept data");
                         return true;
                     } else {
-                        System.out.println("This cannot accept data");
                     }
                     return false;
                 case DragEvent.ACTION_DRAG_ENTERED:
@@ -130,8 +162,6 @@ public class Compass extends AppCompatActivity {
                         ImageView container = (ImageView) view;
                         container.setImageDrawable(((ImageView) draggedFrom).getDrawable());
                         container.setTag(draggedFrom.getTag());
-                        System.out.println(draggedFrom.getTag());
-                        System.out.println(view.getTag());
                     }
 
                     ((ImageView) draggedFrom).setImageDrawable(null);

@@ -28,7 +28,6 @@
                 android:layout_width="310px"
                 android:layout_height="310px"
                 android:layout_column="1"
-                android:layout_margin="1dp"
                 android:background="@android:color/black"
                 android:scaleType="fitCenter"
                 app:srcCompat="@drawable/southeast" />
@@ -55,6 +54,7 @@
         </TableRow>
 
         <TableRow
+            android:id="@+id/gridRow1"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
