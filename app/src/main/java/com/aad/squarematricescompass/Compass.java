@@ -116,27 +116,27 @@ public class Compass extends AppCompatActivity {
                     break;
                 case DragEvent.ACTION_DROP:
                     view.invalidate();
-                    ImageView v = (ImageView) dragEvent.getLocalState();
+                    ImageView draggedFrom = (ImageView) dragEvent.getLocalState();
                     if ((((ImageView) view).getDrawable()!=null) && ((view.getId() != R.id.bin)))
                     {
                         break;
                     }
                     if (view.getId() == R.id.bin) {
-                        carImages.remove(v.getTag());
-                        binImages.add(Integer.valueOf(v.getTag().toString()));
+                        carImages.remove(draggedFrom.getTag());
+                        binImages.add(Integer.valueOf(draggedFrom.getTag().toString()));
                     }
                     else {
                         ImageView container = (ImageView) view;
-                        container.setImageDrawable(((ImageView) v).getDrawable());
-                        container.setTag(v.getTag());
-                        System.out.println(v.getTag());
+                        container.setImageDrawable(((ImageView) draggedFrom).getDrawable());
+                        container.setTag(draggedFrom.getTag());
+                        System.out.println(draggedFrom.getTag());
                         System.out.println(view.getTag());
                     }
 
-                    ((ImageView) v).setImageDrawable(null);
-                    v.setVisibility(View.VISIBLE);
-                    if (v.getId() == R.id.cardSlot) {
-                        carImages.remove(v.getTag());
+                    ((ImageView) draggedFrom).setImageDrawable(null);
+                    draggedFrom.setVisibility(View.VISIBLE);
+                    if (draggedFrom.getId() == R.id.cardSlot) {
+                        carImages.remove(draggedFrom.getTag());
                         if (carImages.size() != 0) {
                             int random = (int) (Math.random() * carImages.size() + 0);
                             ImageView cardSlotImage = findViewById(R.id.cardSlot);
