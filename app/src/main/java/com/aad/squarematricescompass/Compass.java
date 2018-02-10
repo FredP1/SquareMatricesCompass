@@ -45,22 +45,26 @@ public class Compass extends AppCompatActivity {
             R.drawable.car_west_northeast, R.drawable.car_west_northwest, R.drawable.car_west_southwest,
             R.drawable.careastsouthwest, R.drawable.careastwest, R.drawable.carnortheast, R.drawable.carnorthsouth, R.drawable.carsouthwest, R.drawable.carwestsoutheast};
 
+
+
     int[] boardArray = {R.id.option1,R.id.option2,R.id.option3,R.id.option4,R.id.option5,R.id.option6,R.id.option7,R.id.option8,R.id.option9,R.id.option10,R.id.option11,R.id.option12,R.id.option13,R.id.option14,R.id.option15,R.id.option16};
 
     ArrayList<Integer> carImages = new ArrayList<>();
     ArrayList<Integer> binImages = new ArrayList<>();
+    ArrayList<boardCoordinates> coordinatesArray = new ArrayList<>();
+    ArrayList<roundaboutTags> rtArray = new ArrayList<>();
+    int finalScore = 0;
+    boolean boardGenerated = false;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Collections.addAll(carImages,carImages1);
         setContentView(R.layout.activity_compass);
 
+        addDirectionsToDrawables();
         ImageView cardSlotImage = (ImageView) findViewById(R.id.cardSlot);
         cardSlotImage.setImageDrawable(getDrawable(carImages.get(5)));
-
         cardSlotImage.setTag(carImages.get(5));
-
-        int testing = scoreCars();
 
         findViewById(R.id.cardSlot).setOnTouchListener(new dragTouchListener());
         findViewById(R.id.option1).setOnDragListener(new dragListener());findViewById(R.id.option1).setOnTouchListener(new dragTouchListener());
@@ -88,14 +92,12 @@ public class Compass extends AppCompatActivity {
 
     }
 
-    private int scoreCars()
+    private void generateBoardArrayCoordinates()
     {
-        int tempScore = 0;
         int[] imgCoordinates = new int[2];
-        boardCoordinates coordinates = new boardCoordinates();
-        ArrayList<boardCoordinates> coordinatesArray = new ArrayList<>();
         for (int i =0; i < boardArray.length; i++)
         {
+            boardCoordinates coordinates = new boardCoordinates();
             findViewById(boardArray[i]).getLocationInWindow(imgCoordinates);
             coordinates.setViewID(boardArray[i]);
             coordinates.setX(imgCoordinates[0]);
@@ -104,8 +106,80 @@ public class Compass extends AppCompatActivity {
             //System.out.println(imgCoordinates[1]);
             coordinatesArray.add(coordinates);
         }
+        boardGenerated = true;
+    }
 
-        return tempScore;
+    private void addDirectionsToDrawables()
+    {
+        addDrawableToArray(carImages1[0], "E", "NE");
+        addDrawableToArray(carImages1[1], "E", "NW");
+        addDrawableToArray(carImages1[2], "E", "SE");
+        addDrawableToArray(carImages1[3], "N", "NE");
+        addDrawableToArray(carImages1[4], "N", "NW");
+        addDrawableToArray(carImages1[5], "N", "SE");
+        addDrawableToArray(carImages1[6], "N", "SW");
+        addDrawableToArray(carImages1[7], "N", "W");
+        addDrawableToArray(carImages1[8], "NE", "NW");
+        addDrawableToArray(carImages1[9], "NE", "SE");
+        addDrawableToArray(carImages1[10], "NE", "SW");
+        addDrawableToArray(carImages1[11], "NW", "SE");
+        addDrawableToArray(carImages1[12], "NW", "SW");
+        addDrawableToArray(carImages1[13], "S", "E");
+        addDrawableToArray(carImages1[14], "S", "NE");
+        addDrawableToArray(carImages1[15], "S", "NW");
+        addDrawableToArray(carImages1[16], "S", "SE");
+        addDrawableToArray(carImages1[17], "S", "SW");
+        addDrawableToArray(carImages1[18], "SE", "SW");
+        addDrawableToArray(carImages1[19], "W", "NE");
+        addDrawableToArray(carImages1[20], "W", "NW");
+        addDrawableToArray(carImages1[21], "W", "SW");
+        addDrawableToArray(carImages1[22], "E", "SW");
+        addDrawableToArray(carImages1[23], "E", "W");
+        addDrawableToArray(carImages1[24], "N", "E");
+        addDrawableToArray(carImages1[25], "N", "S");
+        addDrawableToArray(carImages1[26], "S", "W");
+        addDrawableToArray(carImages1[27], "W", "SE");
+    }
+
+    private void addDrawableToArray(int drawableInt, String firstDirection, String secondDirection)
+    {
+        roundaboutTags rt = new roundaboutTags();
+        rt.setTagID(drawableInt);
+        rt.setFirstDirection(firstDirection);
+        rt.setSecondDirection(secondDirection);
+        rtArray.add(rt);
+    }
+
+    private int scoreCars()
+    {
+        if (!boardGenerated)
+        {
+            generateBoardArrayCoordinates();
+        }
+
+        finalScore = 0;
+        for (int i = 0; i < coordinatesArray.size(); i++)
+        {
+            for (int j = 0; j < rtArray.size(); j++)
+            {
+                if (findViewById(coordinatesArray.get(i).getViewID()).getTag() != null)
+                {
+                    int coordinatesTag = Integer.valueOf(findViewById(coordinatesArray.get(i).getViewID()).getTag().toString());
+                    if (coordinatesTag == rtArray.get(j).getTagID())
+                    {
+                        if ((rtArray.get(j).getFirstDirection() == coordinatesArray.get(i).getFirstDirection()) || (rtArray.get(j).getFirstDirection() == coordinatesArray.get(i).getSecondDirection()))
+                        {
+                            finalScore++;
+                        }
+                        if ((rtArray.get(j).getSecondDirection() == coordinatesArray.get(i).getFirstDirection()) || (rtArray.get(j).getSecondDirection() == coordinatesArray.get(i).getSecondDirection()))
+                        {
+                            finalScore++;
+                        }
+                    }
+                }
+            }
+        }
+        return finalScore;
     }
 
     private final class dragTouchListener implements View.OnTouchListener {
@@ -125,8 +199,14 @@ public class Compass extends AppCompatActivity {
                 if (view.getParent() == findViewById(R.id.option1)){
                     System.out.println("You have clicked on option1");
                 }*/
-                int score = scoreCars();
                 return true;
+            }
+            if (view == findViewById(R.id.placeholder5))
+            {
+                int testing = 0;
+                testing = scoreCars();
+                System.out.println("The current score is: "+ testing);
+                testing =0;
             }
             return false;
         }
@@ -163,8 +243,7 @@ public class Compass extends AppCompatActivity {
                         container.setImageDrawable(((ImageView) draggedFrom).getDrawable());
                         container.setTag(draggedFrom.getTag());
                     }
-
-                    ((ImageView) draggedFrom).setImageDrawable(null);
+                    draggedFrom.setImageDrawable(null);
                     draggedFrom.setVisibility(View.VISIBLE);
                     if (draggedFrom.getId() == R.id.cardSlot) {
                         carImages.remove(draggedFrom.getTag());
@@ -174,6 +253,9 @@ public class Compass extends AppCompatActivity {
                             cardSlotImage.setImageDrawable(getDrawable(carImages.get(random)));
                             cardSlotImage.setTag(carImages.get(random));
                         }
+                    }
+                    else{
+                        draggedFrom.setTag(null);
                     }
                     return true;
                 case DragEvent.ACTION_DRAG_ENDED:
